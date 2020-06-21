@@ -1,0 +1,93 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<assert.h>
+typedef struct list{
+    int data;
+    struct list*next;
+}list;
+int is_empty(list*head_ref){
+    return (head_ref==NULL);
+}
+list*final_head=NULL;
+list*fin_head_ref=NULL;
+list* create(list*head_ref, int data){
+    if(is_empty(head_ref)){
+        list*new_element=malloc(sizeof(list));
+        new_element->data=data;
+        new_element->next=NULL;
+        return new_element;
+    }
+    else{
+        list*new_element=malloc(sizeof(list));
+        head_ref->next=new_element;
+        new_element->data=data;
+        new_element->next=NULL;
+        return new_element;
+    }
+}
+void print(list*head_ref){
+    if(head_ref==NULL)
+    return;
+    printf("%d ", head_ref->data);
+    return print(head_ref->next);
+}
+void merge(list*h1, list*h2){
+    assert(h1!=NULL);
+    if(h1->next==NULL)
+    h1->next=h2;
+    else
+    return merge(h1->next,h2);
+}
+list* merge_sorted(list*h1, list*h2){
+    static int count=0;
+    ++count;
+    if(h1==NULL || h2==NULL)
+    return ((h1==NULL)?h2:h1);
+    else
+    {
+    fin_head_ref=create(fin_head_ref,(h1->data>=h2->data)?h2->data:h1->data);
+    if(count==1)
+    final_head=fin_head_ref;
+    return merge_sorted((h1->data<=h2->data)?h1->next:h1,(h2->data<=h1->data)?h2->next:h2);
+    }
+}
+int main(){
+    list* head_of_list1=NULL;
+    list* head_of_list2=NULL;
+    list* head_ref_1=NULL;
+    list* head_ref_2=NULL;
+    int input_list_1;
+    int input_list_2;
+    int inp1_elements;
+    int inp2_elements;
+    printf("Enter the number of elements of the first list: \n");
+    scanf("%d", &input_list_1);
+    while(input_list_1--){
+        static int inp_count=0;
+        ++inp_count;
+        scanf("%d", &inp1_elements);
+        head_ref_1=create(head_ref_1, inp1_elements);
+        if(inp_count==1)
+        head_of_list1=head_ref_1;
+    }
+    printf("\nPrinting the elements of list 1: \n");
+    print(head_of_list1);
+    printf("\nNow enter the elemnts of the second list: \n");
+    scanf("%d", &input_list_2);
+    while(input_list_2--){
+        static int inp_count=0;
+        ++inp_count;
+        scanf("%d", &inp2_elements);
+        head_ref_2=create(head_ref_2, inp2_elements);
+        if(inp_count==1)
+        head_of_list2=head_ref_2;
+    }
+    printf("\nPrinting the elements of list 2: \n");
+    print(head_of_list2);
+    printf("\nMerging the arrays in a sorted way in o(n) time using the an alteration of the merge sort: \n");
+    printf("\nPrinting the sorted linked list: \n");
+    list*temp=merge_sorted(head_of_list1,head_of_list2);
+    merge(final_head,temp);
+    print(final_head);
+    return 0;
+}
